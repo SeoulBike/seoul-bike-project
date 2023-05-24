@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.query.criteria.internal.expression.function.CurrentTimeFunction;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class Comment {
 
     private String comment;
 
+    @CreatedDate
     private LocalDateTime upDate;
 
     //연관관계매핑

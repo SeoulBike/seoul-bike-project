@@ -2,6 +2,8 @@ package com.study5.seoul.bike.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ public class Board {
 
 
     //작성일시, 페이징 처리를 위하여 sort할 것이기 때문에 필요함.
+    @CreatedDate
     private LocalDateTime upDate;
 
     /* 수정일시는 필요 없을 것 같다. 왜냐면 페이징 처리할 때 작성 일시로만 하니깐 딱히 필요 없으니 pass! */
