@@ -12,7 +12,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @Builder
 @Entity
-public class BikeMaster {
+public class BikeStationMaster {
 
     @Id
     @Column(name = "LENDPLACE_ID")
