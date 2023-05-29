@@ -1,3 +1,10 @@
+api:
+  url: http://openapi.seoul.go.kr:8088/
+  bikeMaster:
+    key: 706f46794e6a696e373761666e6771
+    type: json
+    service: bikeStationMaster
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
@@ -14,3 +21,4 @@ spring:
       hibernate:
         format_sql: true
 #        show_sql: true
+
