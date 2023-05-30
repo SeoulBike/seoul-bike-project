@@ -1,12 +1,23 @@
 package com.study5.seoul.bike.service;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.study5.seoul.bike.dto.BikeStationMasterDto;
 import com.study5.seoul.bike.repository.BikeStationMasterRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class BikeStationMasterServiceTest {
@@ -24,24 +35,46 @@ class BikeStationMasterServiceTest {
         ReflectionTestUtils.setField(bikeStationMasterService, "type", "json");
         ReflectionTestUtils.setField(bikeStationMasterService, "service", "bikeStationMaster");
     }
-
+    
+//    @Test
+//    @DisplayName("바이크 마스터 정보 파싱 - 성공")
+//    void parseBikeStationMaster() {
+//        // given
+//        int startIndex = 1;
+//        int endIndex = 5;
+//        String bikeMasterString = bikeStationMasterService.getBikeMasterJsonString(startIndex, endIndex);
+//
+//        // when
+//        BikeStationMasterDto bikeStationMasterDto = bikeStationMasterService.parseBikeStationMaster(bikeMasterString);
+//
+//        String resultCode = bikeStationMasterDto.getResult().getCode();
+//        String resultMessage = bikeStationMasterDto.getResult().getMessage();
+//
+//        List<BikeStationMasterDto.BikeStationMaster> bikeStationMasters = bikeStationMasterDto.getBikeStationMasters();
+//
+//        // then
+//        assertEquals(resultCode, "INFO-000");
+//        assertEquals(resultMessage, "정상 처리되었습니다");
+//        assertEquals(bikeStationMasters.size(), endIndex - startIndex + 1);
+//    }
+//
 //    @Test
 //    @DisplayName("바이크 마스터 정보 가져오기 - 성공")
 //    void getBikeMasterString() {
 //        // given
-//        String bikeMasterString = bikeMasterService.getBikeMasterString(1, 1);
+//        String bikeMasterString = bikeStationMasterService.getBikeMasterJsonString(1, 1);
 //
 //        // when
 //        Gson gson = new Gson();
 //        JsonObject jsonObject = gson.fromJson(bikeMasterString, JsonObject.class);
 //        JsonElement resultElement = jsonObject.get("bikeStationMaster").getAsJsonObject().get("RESULT");
 //
-//        String code = resultElement.getAsJsonObject().get("CODE").getAsString();
-//        String message = resultElement.getAsJsonObject().get("MESSAGE").getAsString();
+//        String resultCode = resultElement.getAsJsonObject().get("CODE").getAsString();
+//        String resultMessage = resultElement.getAsJsonObject().get("MESSAGE").getAsString();
 //
 //        // then
-//        assertEquals(code, "INFO-000");
-//        assertEquals(message, "정상 처리되었습니다");
+//        assertEquals(resultCode, "INFO-000");
+//        assertEquals(resultMessage, "정상 처리되었습니다");
 //    }
 
 }
