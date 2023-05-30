@@ -9,11 +9,11 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@Table(name = "likes")
 public class Like {
-
     @Id
     @GeneratedValue
-    @Column(name = "commentId")
+    @Column(name = "likeId")
     private Long id;
 
     private UUID uuid;
