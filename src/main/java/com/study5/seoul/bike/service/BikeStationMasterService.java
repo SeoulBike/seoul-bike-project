@@ -2,7 +2,6 @@ package com.study5.seoul.bike.service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.study5.seoul.bike.dto.BikeStationMasterDto;
 import com.study5.seoul.bike.repository.BikeStationMasterRepository;
@@ -36,48 +35,55 @@ public class BikeStationMasterService {
 
     private final BikeStationMasterRepository bikeStationMasterRepository;
 
-    private BikeStationMasterDto parseBikeMaster(String jsonString) {
+    /**
+     * bikeMasterJsonString을 BikeStationMasterDto로 파싱
+     * @param bikeMasterJsonString
+     * @return BikeStationMasterDto
+     */
+    private BikeStationMasterDto parseBikeStationMaster(String bikeMasterJsonString) {
         Gson gson = new Gson();
-        JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
+        JsonObject jsonObject = gson.fromJson(bikeMasterJsonString, JsonObject.class);
 
-        int listTotalCount = Integer.parseInt(jsonObject.get("list_total_count").getAsString());;
+        JsonObject bikeStationMasterAsJsonObject = jsonObject.get("bikeStationMaster").getAsJsonObject();
+        int listTotalCount = bikeStationMasterAsJsonObject.get("list_total_count").getAsInt();
 
-        JsonElement resultElement = jsonObject.get("RESULT");
+        JsonObject resultAsJsonObject = bikeStationMasterAsJsonObject.get("RESULT").getAsJsonObject();
         BikeStationMasterDto.Result result = BikeStationMasterDto.Result.builder()
-                .code(resultElement.getAsJsonObject().get("CODE").getAsString())
-                .message(resultElement.getAsJsonObject().get("MESSAGE").getAsString())
+                .code(resultAsJsonObject.get("CODE").getAsString())
+                .message(resultAsJsonObject.get("MESSAGE").getAsString())
                 .build();
 
-        JsonArray rowArray = jsonObject.get("row").getAsJsonArray();
+        JsonArray rowAsJsonArray = bikeStationMasterAsJsonObject.get("row").getAsJsonArray();
         List<BikeStationMasterDto.BikeStationMaster> bikeStationMasters = new ArrayList<>();
-        for (int i = 0; i < rowArray.size(); i++) {
+        for (int i = 0; i < rowAsJsonArray.size(); i++) {
+            JsonObject rowAsJsonObject = rowAsJsonArray.get(i).getAsJsonObject();
             bikeStationMasters.add(
                     BikeStationMasterDto.BikeStationMaster.builder()
-                            .id(rowArray.get(i).getAsJsonObject().get("LENDPLACE_ID").getAsString())
-                            .address1(rowArray.get(i).getAsJsonObject().get("STATN_ADDR1").getAsString())
-                            .address2(rowArray.get(i).getAsJsonObject().get("STATN_ADDR2").getAsString())
-                            .lat(rowArray.get(i).getAsJsonObject().get("STATN_LAT").getAsDouble())
-                            .lnt(rowArray.get(i).getAsJsonObject().get("STATN_LNT").getAsDouble())
+                            .id(rowAsJsonObject.get("LENDPLACE_ID").getAsString())
+                            .address1(rowAsJsonObject.get("STATN_ADDR1").getAsString())
+                            .address2(rowAsJsonObject.get("STATN_ADDR2").getAsString())
+                            .lat(rowAsJsonObject.get("STATN_LAT").getAsDouble())
+                            .lnt(rowAsJsonObject.get("STATN_LNT").getAsDouble())
                             .build());
         }
 
-        BikeStationMasterDto bikeStationMasterDto = BikeStationMasterDto.builder()
+        return BikeStationMasterDto.builder()
                 .listTotalCount(listTotalCount)
                 .result(result)
                 .bikeStationMasters(bikeStationMasters)
                 .build();
-
-        return bikeStationMasterDto;
     }
 
     /**
      * Bike Master 정보 조회
+     * @param startIndex
+     * @param endIndex
      * @return BikeMaster Json String
      */
-    private String getBikeMasterString(int startIndex, int endIndex) {
+    private String getBikeMasterJsonString(int startIndex, int endIndex) {
         // TODO index 추가 필요 (최대 데이터 1000건) -> 로직 구현 추가, 테스트를 위한 코드
-        String apiUrl = getUrl(1, 1);
-//        String apiUrl = getUrl(startIndex, endIndex);
+//        String apiUrl = getUrl(1, 1);
+        String apiUrl = getUrl(startIndex, endIndex);
 
         try {
             URL url = new URL(apiUrl);
@@ -85,7 +91,7 @@ public class BikeStationMasterService {
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("GET");
 
-            // ResponseCode = 200, 201, 400, 400 ...
+            // ResponseCode = 200, 201, 400, 404 ...
             int responseCode = httpURLConnection.getResponseCode();
 
             BufferedReader br;

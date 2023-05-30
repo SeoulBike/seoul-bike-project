@@ -6,9 +6,7 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString
 @Builder
 public class BikeStationMasterDto {
 
@@ -20,6 +18,7 @@ public class BikeStationMasterDto {
 
     @Getter
     @Setter
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
@@ -30,6 +29,7 @@ public class BikeStationMasterDto {
 
     @Getter
     @Setter
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
