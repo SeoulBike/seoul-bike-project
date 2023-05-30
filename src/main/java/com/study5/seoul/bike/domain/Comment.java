@@ -18,13 +18,17 @@ public class Comment {
     @Column(name = "commentId")
     private Long id;
 
+    // 연관관계 매핑 나중에
+    // private Member member
 
     private UUID uuid;
 
-    private String comment;
+    private String content;
 
     @CreatedDate
     private LocalDateTime upDate;
+
+    private String DelYN;
 
     //연관관계매핑
     @ManyToOne(fetch = FetchType.LAZY)
