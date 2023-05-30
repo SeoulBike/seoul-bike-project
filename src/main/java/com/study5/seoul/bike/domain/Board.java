@@ -31,6 +31,8 @@ public class Board {
     @Column(nullable = false)
     private String content;
 
+    private String DelYN;
+
 
     //작성일시, 페이징 처리를 위하여 sort할 것이기 때문에 필요함.
     @CreatedDate
@@ -39,9 +41,9 @@ public class Board {
     /* 수정일시는 필요 없을 것 같다. 왜냐면 페이징 처리할 때 작성 일시로만 하니깐 딱히 필요 없으니 pass! */
 
 
-    //연관관계 매핑
-    // Member <-> Board N대N 즉, 다대다가 되어야 합니다. 다대다 매핑보다는 새로운 테이블을 만들어서
-    // 1대 N / N대 1을 하는 것이 무조건 적으로 좋다는 강의를 들어서 이 부분은 Member를 만드는 유진님과 상의 해보고 구현하겠습니다.
+    //연관관계 매핑 Member Entity를 만들어 놓고 싶은데 나중에 merge할 때 문제가 있을까봐 패스..
+//    @ManyToOne
+//    private Member member
 
 
     //연관관계 매핑, fk를 가진 comment에 갑을 두어줍니다. 을은 mappedBy로 연결해줍니다.
