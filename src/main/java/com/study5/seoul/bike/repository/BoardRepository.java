@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
@@ -16,7 +17,7 @@ public class BoardRepository {
         em.persist(board);
     }
 
-    public Board fineOne(Long id){
+    public Board findOne(Long id){
         return em.find(Board.class,id);
     }
 
@@ -27,6 +28,14 @@ public class BoardRepository {
     public List<Board> findByTitle(String title){
         return em.createQuery("select b from Board b where b.title = :title",Board.class)
                 .setParameter("title",title)
+                .getResultList();
+    }
+
+    // 모든 게시글 조회 (삭제 제외)
+    public List<Board> findAllNotDeletedWithComments() {
+        String jpql = "SELECT DISTINCT b FROM Board b LEFT JOIN FETCH b.comments WHERE b.DelYN = :delYN";
+        return em.createQuery(jpql, Board.class)
+                .setParameter("delYN", "N")
                 .getResultList();
     }
     // 모든 게시글 중 삭제 제외한 게시물들 조회
