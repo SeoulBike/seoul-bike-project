@@ -18,6 +18,8 @@ import java.util.UUID;
 public class BoardService {
     private final BoardRepository boardRepository;
 
+    // findOne
+    public Board findOne(Long id){return boardRepository.findOne(id);}
 
     // 모든 게시글
     public List<Board> showBoardList(){
@@ -33,6 +35,9 @@ public class BoardService {
     public List<Board> findByTitle(String title){
         return boardRepository.findByTitle(title);
     }
+
+    // 모든 게시글 조회 (삭제 제외)
+    public List<Board> findAllNotDeletedWithComments() {return boardRepository.findAllNotDeletedWithComments();}
 
     //글 작성
     //멤버의 UUID 값을 게시물 값에 저장합니다.
@@ -57,11 +62,11 @@ public class BoardService {
     public void regBoard(Long boardId, String title, String content/*, Member member*/){
         //UUID Validation
 /*      UUID boardUuid = boardRepository.fineOne(boardId).getUuid();
-        UUID memberUuid = m0ember.getUuid();
+        UUID memberUuid = member.getUuid();
         if(boardUuid != memberUuid){
             throw new IllegalStateException("작성자만 수정가능합니다.");}
 */
-        Board board = boardRepository.fineOne(boardId);
+        Board board = boardRepository.findOne(boardId);
         board.setTitle(title);
         board.setContent(content);
     }
@@ -75,7 +80,7 @@ public class BoardService {
         if(boardUuid != memberUuid){
             throw new IllegalStateException("작성자만 삭제가능합니다.");}
 */
-        Board board = boardRepository.fineOne(boardId);
+        Board board = boardRepository.findOne(boardId);
         board.setDelYN("Y");
     }
 }
