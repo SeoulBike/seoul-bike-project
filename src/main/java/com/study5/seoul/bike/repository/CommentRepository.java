@@ -14,6 +14,7 @@ public class CommentRepository {
     private final EntityManager em;
 
     public void save(Comment comment){
+
         em.persist(comment);
     }
 
