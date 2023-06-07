@@ -34,7 +34,7 @@ public class CommentService {
     //댓글 작성
     @Transactional
     public void create(Long boardId,String content     /*, Member member*/){
-        Board board = boardRepository.fineOne(boardId);
+        Board board = boardRepository.findOne(boardId);
         Comment comment = new Comment();
         //UUID 설정
         // comment.setUuid(member.getUuid);
@@ -42,6 +42,7 @@ public class CommentService {
         comment.setContent(content);
         comment.setDelYN("N");
         comment.setUpDate(LocalDateTime.now());
+        commentRepository.save(comment);
     }
 
 
