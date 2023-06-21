@@ -1,5 +1,6 @@
 package com.study5.seoul.bike.domain;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Getter @Setter
+@Data
 public class Board {
 
     //Board 엔티티의 id(pk값)
@@ -32,6 +33,7 @@ public class Board {
     private String content;
 
     private String DelYN;
+
 
 
     //작성일시, 페이징 처리를 위하여 sort할 것이기 때문에 필요함.
