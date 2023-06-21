@@ -1,11 +1,13 @@
 package com.study5.seoul.bike.service;
 
 import com.study5.seoul.bike.domain.Board;
+import com.study5.seoul.bike.domain.Like;
 import com.study5.seoul.bike.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,23 +23,21 @@ public class BoardService {
     // findOne
     public Board findOne(Long id){return boardRepository.findOne(id);}
 
-    // 모든 게시글
-    public List<Board> showBoardList(){
-        return boardRepository.findAll();
-    }
+    // 특정 게시글 조회(댓글과 함께)
+    public Board findBoardWithComments(Long id) {return boardRepository.findBoardWithComments(id);}
 
-    // 삭제 게시물 제외 한 게시글 조회
-    public List<Board> showNotDelBoardList(){
-        return boardRepository.showNotDelBoardList();
-    }
+    @Transactional
+    // 모든 게시글 조회 ver 2 (댓글과 함께)
+    public List<Board> findAllNotDeletedWithCommentsVer2(int offset,int limit) { return boardRepository.findAllNotDeletedWithCommentsVer2(offset,limit);}
 
-    // 제목 조회 게시글
-    public List<Board> findByTitle(String title){
-        return boardRepository.findByTitle(title);
-    }
+    // 페이징 갯수 처리
+    public int getTotalCount(){return boardRepository.getTotalCount();}
 
     // 모든 게시글 조회 (삭제 제외)
     public List<Board> findAllNotDeletedWithComments() {return boardRepository.findAllNotDeletedWithComments();}
+
+    // 게시글 검색
+    public List<Board> findByTitle(String title, int offset, int limit){return boardRepository.findByTitle(title, offset, limit);}
 
     //글 작성
     //멤버의 UUID 값을 게시물 값에 저장합니다.
@@ -82,5 +82,14 @@ public class BoardService {
 */
         Board board = boardRepository.findOne(boardId);
         board.setDelYN("Y");
+        //한번더 확인해서 수정된 것이 맞는지 후 처리.
+        boardRepository.findOne(boardId).setDelYN("Y");
     }
+
+
+    // 좋아요 갯수 긁어오기
+    public List<Board> getLikeCount(Long id){
+        return boardRepository.getLikeCount(id);
+    }
+
 }
