@@ -13,18 +13,12 @@ import java.util.List;
 public class CommentRepository {
     private final EntityManager em;
 
-    public void save(Comment comment){
-
-        em.persist(comment);
-    }
+    public void save(Comment comment){ em.persist(comment); }
 
     public Comment fineOne(Long id){
         return em.find(Comment.class,id);
     }
 
-    public List<Comment> findAll(){
-        return em.createQuery("select c from Comment b",Comment.class).getResultList();
-    }
 
     // 모든 댓글 중 삭제 제외한 게시물들 조회
     public List<Comment> showNotDelCommentList(){
