@@ -1,5 +1,6 @@
 package com.study5.seoul.bike.domain;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Getter @Setter
+@Data
 public class Comment {
     @Id @GeneratedValue
     @Column(name = "commentId")
@@ -23,6 +24,7 @@ public class Comment {
 
     private UUID uuid;
 
+    @Column(nullable = false)
     private String content;
 
     @CreatedDate
