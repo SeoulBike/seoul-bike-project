@@ -5,6 +5,7 @@ import com.study5.seoul.bike.domain.Comment;
 import com.study5.seoul.bike.repository.BoardRepository;
 import com.study5.seoul.bike.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -21,9 +23,8 @@ public class CommentService {
     private final BoardRepository boardRepository;
 //    private final MemberRepository memberRepository;
 
-    // 모든 댓글 조회
-    public List<Comment> showCommentList(){
-        return commentRepository.findAll();
+    public Comment findOne(Long id){
+        return commentRepository.fineOne(id);
     }
     // 삭제 제외한 모든 댓글 조회
     public List<Comment> showNotDelCommentsList(){
@@ -75,6 +76,10 @@ public class CommentService {
             throw new IllegalStateException("작성자만 삭제가능합니다.");}
  */
 
+        comment.setDelYN("Y");
+
+        //한번 더 삭제 확인하는 습관
+        commentRepository.fineOne(CommentId);
         comment.setDelYN("Y");
 
     }
