@@ -14,6 +14,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 
+import static com.study5.seoul.bike.type.EmailVerificationStatus.VERIFIED;
+import static com.study5.seoul.bike.type.MemberStatus.ACTIVE;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,13 +40,15 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private MemberRole memberRole;
 
-    private LocalDateTime registeredAt;
-    private LocalDateTime unregisteredAt;
-
-    // TODO 이메일 관련 작업
     @Enumerated(EnumType.STRING)
     private EmailVerificationStatus emailVerificationStatus;
     private String emailAuthKey;
     private LocalDateTime emailAuthAt;
+
+    public void confirmEmailVerification() {
+        this.emailVerificationStatus = VERIFIED;
+        this.memberStatus = ACTIVE;
+        this.emailAuthAt = LocalDateTime.now();
+    }
 
 }

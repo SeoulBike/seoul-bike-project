@@ -1,7 +1,7 @@
 package com.study5.seoul.bike.dto;
 
+import com.study5.seoul.bike.domain.Member;
 import com.study5.seoul.bike.type.MemberRole;
-import com.study5.seoul.bike.type.MemberStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,7 +9,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 
 public class MemberRegistration {
 
@@ -38,24 +37,12 @@ public class MemberRegistration {
     public static class Response {
 
         private Long id;
-        private String email;
-        private String phone;
-        private String nickname;
+        private String emailAuthKey;
 
-        private MemberStatus memberStatus;
-        private MemberRole memberRole;
-
-        private LocalDateTime registeredAt;
-
-        public static Response from(MemberDto memberDto) {
+        public static Response fromEntity(Member member) {
             return Response.builder()
-                    .id(memberDto.getId())
-                    .email(memberDto.getEmail())
-                    .phone(memberDto.getPhone())
-                    .nickname(memberDto.getNickname())
-                    .memberStatus(memberDto.getMemberStatus())
-                    .memberRole(memberDto.getMemberRole())
-                    .registeredAt(memberDto.getRegisteredAt())
+                    .id(member.getId())
+                    .emailAuthKey(member.getEmailAuthKey())
                     .build();
         }
     }

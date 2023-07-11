@@ -37,32 +37,24 @@ public class CycleStationService {
 
     private final CycleStationRepository cycleStationRepository;
 
-    /**
-     * 공공자전거 대여소 리스트 DB 저장
-     */
+    /** 공공자전거 대여소 리스트 DB 저장 */
     public void saveBikeStations(List<CycleStation> cycleStations) {
-        // 시간 복잡도 -> for save() > saveAll(), saveAll()이 더 효율적
         cycleStationRepository.saveAll(cycleStations);
     }
 
-    /**
-     * 공공자전거 대여소 정보의 개수 조회
-     */
+    /** 공공자전거 대여소 정보의 개수 조회 */
     public int getListTotalCount() {
         String CycleStationJsonString = getCycleStationJsonString(1, 1);
         return parseCycleStation(CycleStationJsonString).getListTotalCount();
     }
 
-    /**
-     * 파싱(JsonString -> CycleStationDto)
-     */
+    /** 파싱(JsonString -> CycleStationDto) */
     public CycleStationDto parseCycleStation(String CycleStationJsonString) {
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(CycleStationJsonString, JsonObject.class);
 
         JsonObject stationInfoAsJsonObject = jsonObject.get("stationInfo").getAsJsonObject();
 
-        // TODO 로직 고민 -> null 일 경우 CustomException(code, message)
         if (null == stationInfoAsJsonObject) {
             throw new RuntimeException("데이터 요청에 실패했습니다.");
         }
@@ -86,8 +78,6 @@ public class CycleStationService {
                             .rentNm(rowAsJsonObject.get("RENT_NM").getAsString())
                             .rentNo(rowAsJsonObject.get("RENT_NO").getAsString())
                             .rentIdNm(rowAsJsonObject.get("RENT_ID_NM").getAsString())
-                            // TODO HOLD_NUM 필드가 아에 안내려오는 값 존재
-//                            .holdNum(Integer.valueOf(rowAsJsonObject.get("HOLD_NUM").getAsString()))
                             .address1(rowAsJsonObject.get("STA_ADD1").getAsString())
                             .address2(rowAsJsonObject.get("STA_ADD2").getAsString())
                             .lat(Double.parseDouble(rowAsJsonObject.get("STA_LAT").getAsString()))
@@ -102,9 +92,7 @@ public class CycleStationService {
                 .build();
     }
 
-    /**
-     * 공공자전거 대여소 정보 조회
-     */
+    /** 공공자전거 대여소 정보 조회 */
     public String getCycleStationJsonString(int startIndex, int endIndex) {
         String apiUrl = getUrl(startIndex, endIndex);
 
@@ -134,15 +122,11 @@ public class CycleStationService {
             return response.toString();
 
         } catch (Exception e) {
-            // Exception 다루기
-            e.printStackTrace();
-            return "failed to get response";
+            throw new RuntimeException("응답이 존재하지 않습니다.");
         }
     }
 
-    /**
-     * 공공자전거 대여소 정보 조회
-     */
+    /** 공공자전거 대여소 정보 조회 */
     private String getUrl(int startIndex, int endIndex) {
         String separator = "/";
         return baseUrl + key + separator + type + separator + service + separator + startIndex + separator + endIndex;

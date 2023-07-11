@@ -40,18 +40,12 @@ public class SecurityConfiguration {
         // 요청 허용/제한 설정
         http.authorizeRequests()
                 .antMatchers(
-                        "/"
-                        , "/seoul/bike/member/register"
-                        , "/seoul/bike/member/login"
+                        "/*"
+                        , "/**"
+//                        , "/seoul/bike/member/register"
+//                        , "/seoul/bike/member/login"
                 )
                 .permitAll();
-
-        // TODO 특정 권한 허용/제한 설정
-//        http.authorizeRequests()
-//                .antMatchers("")
-//                .hasAnyRole()
-//                .anyRequest()
-//                .denyAll();
 
         // JWT 인증 필터 적용
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

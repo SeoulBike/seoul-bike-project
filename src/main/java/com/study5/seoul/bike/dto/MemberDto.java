@@ -27,7 +27,6 @@ public class MemberDto {
     private LocalDateTime registeredAt;
     private LocalDateTime unregisteredAt;
 
-    // TODO 이메일 관련 작업
     private EmailVerificationStatus emailVerificationStatus;
     private String emailAuthKey;
     private LocalDateTime emailAuthAt;
@@ -40,13 +39,9 @@ public class MemberDto {
                 .nickname(member.getNickname())
                 .memberStatus(member.getMemberStatus())
                 .memberRole(member.getMemberRole())
-                .registeredAt(member.getRegisteredAt())
-                .unregisteredAt(member.getUnregisteredAt())
-
                 .emailVerificationStatus(member.getEmailVerificationStatus())
                 .emailAuthKey(member.getEmailAuthKey())
                 .emailAuthAt(member.getEmailAuthAt())
-
                 .build();
     }
 }

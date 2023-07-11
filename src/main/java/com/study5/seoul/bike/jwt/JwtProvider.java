@@ -1,11 +1,9 @@
 package com.study5.seoul.bike.jwt;
 
-import com.study5.seoul.bike.service.MemberDetailsService;
+import com.study5.seoul.bike.dto.TokenDto;
+import com.study5.seoul.bike.service.CustomUserDetailsService;
 import com.study5.seoul.bike.type.MemberRole;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,52 +16,63 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
-
-/**
- * JWT -> 서버 비밀 값 + JWT 헤더, 페이로드를 alg에 넣어 서명값과 같은지 확인 -> 동일 시 인가
- */
-
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
 
     private static final String TOKEN_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
-    private static final long TOKEN_EXPIRE_TIME = 1000L * 60 * 60; // 1시간
-    
-    private static final String KEY_ROLE = "memberRole";
+    private static final String KEY_ROLE = "role";
 
-    private final MemberDetailsService memberDetailsService;
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 1000L; // 1 hour
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 14 * 24 * 60 * 60 * 1000L; // 14 day
+
+    private final CustomUserDetailsService customUserDetailsService;
 
 
     @Value("${spring.jwt.secret}")
     private String secretKey;
 
     /** 토큰 생성 */
-    public String GenerateAccessToken(String email, MemberRole memberRole) {
-        // JWT 를 이용해 전송되는 암호화된 정보 생성 -> 이메일을 통한 회원가입, setSubject(email)
-        Claims claims = Jwts.claims().setSubject(email);
+    public TokenDto GenerateToken(String phone, MemberRole memberRole) {
+        // Claims -> 구분을 위한 phone, role 삽입
+        Claims claims = Jwts.claims().setSubject(phone);
         claims.put(KEY_ROLE, memberRole);
 
+        // 생성날짜, 만료날짜를 위한 Date
         Date now = new Date();
-        Date expiredDate = new Date(now.getTime() + TOKEN_EXPIRE_TIME);
 
-        return Jwts.builder()
+        String accessToken = Jwts.builder()
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(expiredDate)
+                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
+
+        String refreshToken = Jwts.builder()
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME))
+                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .compact();
+
+        return TokenDto.builder()
+                .grantType(TOKEN_PREFIX.substring(0, TOKEN_PREFIX.length() - 1))
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .accessTokenExpireDate(ACCESS_TOKEN_EXPIRE_TIME)
+                .build();
     }
 
+
     /** Spring Security 인증 과정에서 권한 확인 */
-    public Authentication getAuthentication(String accessToken) {
-        UserDetails userDetails = memberDetailsService.loadUserByUsername(this.getEmail(accessToken));
+    public Authentication getAuthentication(String token) {
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(this.getPhone(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    /** 서브젝트(사용자 이메일) 가져오기 */
-    public String getEmail(String accessToken) {
+    /** SUBJECT(사용자 전화번호) 가져오기 */
+    public String getPhone(String accessToken) {
         return parseClaims(accessToken).getSubject();
     }
 
@@ -79,21 +88,21 @@ public class JwtProvider {
     }
 
     /** 토큰 유효성 검사 */
-    public boolean validateAccessToken(String accessToken) {
-        // accessToken 값이 빈 값일 경우 유효하지 않다.
-        if (!StringUtils.hasText(accessToken)) {
+    public boolean validateToken(String token) {
+        // token 값이 빈 값일 경우 유효하지 않다.
+        if (!StringUtils.hasText(token)) {
             return false;
         }
 
-        Claims claims = parseClaims(accessToken);
+        Claims claims = parseClaims(token);
         // 토큰 만료시간이 현재 시간보다 이전인지 아닌지 확인
         return !claims.getExpiration().before(new Date());
     }
 
-    /** Claims(암호화된 정보) 파싱 */
-    public Claims parseClaims(String accessToken) {
+    /** JWT 토큰 복호화 후 가져오기 */
+    public Claims parseClaims(String token) {
         try {
-            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken).getBody();
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
 //            throw new RuntimeException("토큰이 만료되었습니다.");
             return e.getClaims();

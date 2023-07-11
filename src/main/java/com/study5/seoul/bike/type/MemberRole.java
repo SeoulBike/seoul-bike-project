@@ -12,6 +12,6 @@ public enum MemberRole {
 
     ;
 
-    private final String authority;
+    private final String role;
     private final String description;
 }

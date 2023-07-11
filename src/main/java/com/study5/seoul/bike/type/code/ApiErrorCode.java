@@ -1,11 +1,11 @@
-package com.study5.seoul.bike.type;
+package com.study5.seoul.bike.type.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ApiResponseCode {
+public enum ApiErrorCode {
 
     INFO_000("INFO-000", "정상 처리되었습니다")
     , INFO_100 ("INFO-100", "인증키가 유효하지 않습니다. 인증키가 없는 경우, 열린 데이터 광장 홈페이지에서 인증키를 신청하십시오.")

@@ -24,8 +24,6 @@ public class CycleStationDto {
                 .collect(Collectors.toList());
     }
 
-
-    // TODO Result -> 따로 빼는 거 생각
     @Getter
     @Builder
     public static class Result {
@@ -36,13 +34,11 @@ public class CycleStationDto {
     @Getter
     @Builder
     public static class RowCycleStation {
-
         private String district;
         private String rentId;
         private String rentNo;
         private String rentNm;
         private String rentIdNm;
-//        private Integer holdNum;
         private String address1;
         private String address2;
         private double lat;
@@ -55,7 +51,6 @@ public class CycleStationDto {
                     .rentNm(this.rentNm)
                     .rentNo(this.rentNo)
                     .rentIdNm(this.rentIdNm)
-//                    .holdNum(this.holdNum)
                     .address1(this.address1)
                     .address2(this.address2)
                     .lat(this.lat)
